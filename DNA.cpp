@@ -397,7 +397,7 @@ DNA reverseTranscription(const RNA &rna)
                 openPorts[c.spanId] = nPorts++;
                 ci = rna.otherIndexOfSameSpan(ci);
                 // std::cout << ">>>>>>Cartello (node " << destNodeId << " already vis) ";
-                std::cout << " rna[" << ci << "].spanId = " << rna.chunks[ci].spanId << std::endl;
+                // std::cout << " rna[" << ci << "].spanId = " << rna.chunks[ci].spanId << std::endl;
                 ci--;
             }
             b.len = rna.edgeLenghtOf(c);
