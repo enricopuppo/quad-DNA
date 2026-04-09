@@ -192,6 +192,8 @@ public:
     int nRegions() const { return quadRegions.nClusters(); }
     bool isClosed() const;
     int countIrregulars() const;
+    std::vector<int> getIrregulars() const;
+    float angleDefect(int vi) const;
     BoundingCube computeBoundingCube() const;
 
     std::string statsString() const;

@@ -103,7 +103,8 @@ int main(int argc, char *argv[])
 
     if (!mi.importObj(filename))
     {
-        logFile << "ABORT - File not opened or mesh not closed\n\n\n\n\n";
+        std::cout << "ABORT - File not opened or mesh not closed\n";
+        logFile << "ABORT - File not opened or mesh not closed\n";
         logFile.close();
         return 1;
     }

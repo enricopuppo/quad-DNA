@@ -1,5 +1,7 @@
 #include <map>
+#include <cmath>
 #include <glm/common.hpp>
+#include <glm/geometric.hpp>
 
 #include "mesh.h"
 #include "uv.h"
@@ -19,6 +21,43 @@ BoundingCube Mesh::computeBoundingCube() const{
 
     return res;
 
+}
+
+float Mesh::angleDefect(int vi) const{
+    assert(vi >= 0 && vi < verts.size());
+    if (vi < 0 || vi >= verts.size()) return 0.0f;
+
+    float totalAngle = 0.0f;
+
+    for (const Quad &q : quads) {
+        int local = -1;
+        for (int k = 0; k < 4; ++k) {
+            if (q.vi[k] == vi) {
+                local = k;
+                break;
+            }
+        }
+        if (local < 0) continue;
+
+        int prevVi = q.vi[(local + 3) % 4];
+        int nextVi = q.vi[(local + 1) % 4];
+
+        const glm::vec3 &p = verts[vi].pos;
+        glm::vec3 a = verts[prevVi].pos - p;
+        glm::vec3 b = verts[nextVi].pos - p;
+
+        float la = glm::length(a);
+        float lb = glm::length(b);
+        if (la <= 0.0f || lb <= 0.0f) continue;
+
+        a /= la;
+        b /= lb;
+        float cosTheta = glm::clamp(glm::dot(a, b), -1.0f, 1.0f);
+        totalAngle += std::acos(cosTheta);
+    }
+
+    const float twoPi = 2.0f * std::acos(-1.0f);
+    return twoPi - totalAngle;
 }
 
 void Mesh::normalizeIn01(){
@@ -170,6 +209,14 @@ int Mesh::countIrregulars() const{
     int res = 0;
     for (Vert v: verts) {
         if (!v.isRegular()) res++;
+    }
+    return res;
+}
+
+std::vector<int> Mesh::getIrregulars() const{
+    std::vector<int> res;
+    for (int i=0; i<verts.size(); i++) {
+        if (!verts[i].isRegular()) res.push_back(i);
     }
     return res;
 }
